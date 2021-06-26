@@ -18,3 +18,4 @@ runs:
     BUILDXY_MODE: ${{ inputs.mode }}
     CONTAINER_NAME: ${{ inputs.container_name }}
     CONTAINER_TAG: ${{ inputs.container_tag }}
+    GITHUB_HEAD_REF: ${{ github.head_ref }}
