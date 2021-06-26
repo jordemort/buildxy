@@ -13,7 +13,7 @@ inputs:
   registry_username:
     description: Username for container registry
     required: false
-  registry_token:
+  registry_password:
     description: Token for container registry
     required: false
   mode:
@@ -28,6 +28,5 @@ runs:
     CONTAINER_NAME: ${{ inputs.container_name }}
     CONTAINER_TAG: ${{ inputs.container_tag }}
     CONTAINER_REGISTRY: ${{ inputs.container_registry }}
-    GITHUB_HEAD_REF: $GITHUB_HEAD_REF
     REGISTRY_USERNAME: ${{ inputs.registry_username }}
-    REGISTRY_TOKEN: ${{ inputs.registry_token }}
+    REGISTRY_PASSWORD: ${{ inputs.registry_password }}
