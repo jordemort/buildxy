@@ -10,6 +10,7 @@ inputs:
   container_registry:
     description: Container registry to log into, if not docker.io
     required: false
+    default: docker.io
   registry_username:
     description: Username for container registry
     required: false

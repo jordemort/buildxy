@@ -15,6 +15,7 @@ if [ "$BUILDXY_MODE" != "build" ] && [ "$BUILDXY_MODE" != "push" ] ; then
 fi
 
 PLATFORMS=${PLATFORMS:-linux/amd64}
+CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-docker.io}
 CONTAINER_TAG=${CONTAINER_TAG:-${GITHUB_HEAD_REF:-$(git rev-parse --abbrev-ref HEAD 2> /dev/null || true)}}
 
 # shellcheck disable=SC2001
@@ -79,7 +80,7 @@ for tag in latest "$CONTAINER_TAG" ; do
 done
 
 if [ "$BUILDXY_MODE" = "push" ] ; then
-  buildx_argv+=(--cache-to "type=registry,ref=${CONTAINER_NAME}:${CONTAINER_TAG}.cache,mode=max")
+  buildx_argv+=(--cache-to "type=registry,ref=${CONTAINER_REGISTRY}/${CONTAINER_NAME}:${CONTAINER_TAG}.cache,mode=max")
 fi
 
 docker buildx create --name "buildxy-$$" \
@@ -94,18 +95,13 @@ cleanup_builder() {
 trap cleanup_builder EXIT
 
 if [ -n "${REGISTRY_USERNAME:-}" ] && [ -n "${REGISTRY_PASSWORD:-}" ] ; then
-  login_argv=(login)
-  if [ -n "${CONTAINER_REGISTRY:-}" ] ; then
-    login_argv+=("$CONTAINER_REGISTRY")
-  fi
-
-  docker "${login_argv[@]}" --username "$REGISTRY_USERNAME" --password-stdin <<< "$REGISTRY_PASSWORD"
+  docker login "$CONTAINER_REGISTRY" --username "$REGISTRY_USERNAME" --password-stdin <<< "$REGISTRY_PASSWORD"
 fi
 
 docker buildx build \
-  --tag "${CONTAINER_NAME}:${CONTAINER_TAG}" \
+  --tag "${CONTAINER_REGISTRY}/${CONTAINER_NAME}:${CONTAINER_TAG}" \
   "${buildx_argv[@]}" "$@" .
 
 if [ "$BUILDXY_MODE" = "push" ] ; then
-  maybe_push "${CONTAINER_NAME}:${CONTAINER_TAG}"
+  maybe_push "${CONTAINER_REGISTRY}/${CONTAINER_NAME}:${CONTAINER_TAG}"
 fi
