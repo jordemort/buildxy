@@ -82,6 +82,14 @@ if [ "$BUILDXY_MODE" = "push" ] ; then
   buildx_argv+=(--cache-to "type=registry,ref=${CONTAINER_NAME}:${CONTAINER_TAG}.cache,mode=max")
 fi
 
+BUILDER=$(docker buildx create --use)
+
+cleanup_builder() {
+  docker buildx rm "$BUILDER"
+}
+
+trap cleanup_builder EXIT
+
 docker buildx build \
   --tag "${CONTAINER_NAME}:${CONTAINER_TAG}" \
   "${buildx_argv[@]}" "$@" .
