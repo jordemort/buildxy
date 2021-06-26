@@ -1,5 +1,5 @@
 name: "buildxy"
-description: ""
+description: "buildxy helps you hold buildx correctly"
 inputs:
   container_name:
     description: Name of your container, i.e. `mycoolname/container`
@@ -17,6 +17,9 @@ inputs:
   registry_password:
     description: Token for container registry
     required: false
+  extra_build_args:
+    description: Additional arguments to pass to `docker buildx build`
+    required: false
   mode:
     description: Leave at `push` to push your contianer (and the cache manifest), or set to `build` to just build it"
     required: false
@@ -26,6 +29,7 @@ runs:
   image: "Dockerfile"
   env:
     BUILDXY_MODE: ${{ inputs.mode }}
+    EXTRA_BUILD_ARGS: ${{ inputs.extra_build_args }}
     CONTAINER_NAME: ${{ inputs.container_name }}
     CONTAINER_TAG: ${{ inputs.container_tag }}
     CONTAINER_REGISTRY: ${{ inputs.container_registry }}

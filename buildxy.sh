@@ -69,6 +69,11 @@ buildx_argv=(
   --load
 )
 
+if [ -n "${EXTRA_BUILD_ARGS:-}" ] ; then
+  readarray -t -d '' extra_build_args < <(xargs printf '%s\0' <<< "$EXTRA_BUILD_ARGS")
+  buildx_argv+=("${extra_build_args[@]}")
+fi
+
 for tag in latest "$CONTAINER_TAG" ; do
   cache_from="${CONTAINER_NAME}:${tag}.cache"
   if docker pull --quiet "$cache_from" 2> /dev/null ; then
