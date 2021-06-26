@@ -18,7 +18,7 @@ PLATFORMS=${PLATFORMS:-linux/amd64}
 CONTAINER_TAG=${CONTAINER_TAG:-${GITHUB_HEAD_REF:-$(git rev-parse --abbrev-ref HEAD 2> /dev/null || true)}}
 
 # shellcheck disable=SC2001
-CONTAINER_TAG=$(echo "$CONTAINER_TAG" | sed 's/[^a-zA-Z0-9]\+/-/g')
+CONTAINER_TAG=$(sed 's/[^a-zA-Z0-9]\+/-/g' <<< "$CONTAINER_TAG")
 
 if [ "$CONTAINER_TAG" = "main" ] || [ "$CONTAINER_TAG" = "master" ] ; then
   CONTAINER_TAG="latest"
