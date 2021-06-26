@@ -93,6 +93,15 @@ cleanup_builder() {
 
 trap cleanup_builder EXIT
 
+if [ -n "${REGISTRY_USERNAME:-}" ] && [ -n "${REGISTRY_PASSWORD:-}" ] ; then
+  login_argv=(login)
+  if [ -n "${CONTAINER_REGISTRY:-}" ] ; then
+    login_argv+=("$CONTAINER_REGISTRY")
+  fi
+
+  docker "${login_argv[@]}" --username "$REGISTRY_USERNAME" --password-stdin <<< "$REGISTRY_PASSWORD"
+fi
+
 docker buildx build \
   --tag "${CONTAINER_NAME}:${CONTAINER_TAG}" \
   "${buildx_argv[@]}" "$@" .

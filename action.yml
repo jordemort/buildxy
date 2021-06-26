@@ -7,6 +7,15 @@ inputs:
   container_tag:
     description: Tag for your container, i.e. `latest` - omit to make one up based on the branch name
     required: false
+  container_registry:
+    description: Container registry to log into, if not docker.io
+    required: false
+  registry_username:
+    description: Username for container registry
+    required: false
+  registry_token:
+    description: Token for container registry
+    required: false
   mode:
     description: Leave at `push` to push your contianer (and the cache manifest), or set to `build` to just build it"
     required: false
@@ -18,4 +27,7 @@ runs:
     BUILDXY_MODE: ${{ inputs.mode }}
     CONTAINER_NAME: ${{ inputs.container_name }}
     CONTAINER_TAG: ${{ inputs.container_tag }}
+    CONTAINER_REGISTRY: ${{ inputs.container_registry }}
     GITHUB_HEAD_REF: $GITHUB_HEAD_REF
+    REGISTRY_USERNAME: ${{ inputs.registry_username }}
+    REGISTRY_TOKEN: ${{ inputs.registry_token }}

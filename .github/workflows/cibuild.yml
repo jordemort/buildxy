@@ -10,12 +10,6 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Login to container registry
-        uses: docker/login-action@v1.10.0
-        with:
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_TOKEN }}
-
       - uses: actions/checkout@v2.3.4
         with:
           submodules: recursive
@@ -24,3 +18,5 @@ jobs:
         uses: ./
         with:
           container_name: docker.io/jordemort/buildxy
+          registry_username: ${{ secrets.REGISTRY_USERNAME }}
+          registry_password: ${{ secrets.REGISTRY_TOKEN }}
