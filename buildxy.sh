@@ -84,7 +84,7 @@ fi
 
 docker buildx create --name "buildxy-$$" \
   --driver docker-container \
-  --buildkitd-flags --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host \
+  --buildkitd-flags "--allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host" \
   --use > /dev/null
 
 cleanup_builder() {
