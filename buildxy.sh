@@ -7,7 +7,7 @@ if [ -z "${CONTAINER_NAME:-}" ] ; then
   exit 1
 fi
 
-BUILDXY_MODE=${BUILDXY_MODE:-build}
+BUILDXY_MODE=${BUILDXY_MODE:-push}
 
 if [ "$BUILDXY_MODE" != "build" ] && [ "$BUILDXY_MODE" != "push" ] ; then
   echo "ERROR: unknown BUILDXY_MODE '$BUILDXY_MODE'" >&2

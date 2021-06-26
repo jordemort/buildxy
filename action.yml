@@ -8,9 +8,9 @@ inputs:
     description: Tag for your container, i.e. `latest` - omit to make one up based on the branch name
     required: false
   mode:
-    description: Set to `push` to push your contianer (and the cache manifest), or `build` to just build it"
+    description: Leave at `push` to push your contianer (and the cache manifest), or set to `build` to just build it"
     required: false
-    default: build
+    default: push
 runs:
   using: "docker"
   image: "Dockerfile"
