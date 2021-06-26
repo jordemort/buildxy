@@ -82,10 +82,13 @@ if [ "$BUILDXY_MODE" = "push" ] ; then
   buildx_argv+=(--cache-to "type=registry,ref=${CONTAINER_NAME}:${CONTAINER_TAG}.cache,mode=max")
 fi
 
-BUILDER=$(docker buildx create --use)
+docker buildx create --name "buildxy-$$" \
+  --driver docker-container \
+  --buildkitd-flags --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host \
+  --use > /dev/null
 
 cleanup_builder() {
-  docker buildx rm "$BUILDER"
+  docker buildx rm "buildxy-$$"
 }
 
 trap cleanup_builder EXIT
