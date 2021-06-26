@@ -26,3 +26,5 @@ jobs:
 
       - name: buildxy
         uses: .
+        with:
+          container_name: docker.io/jordemort/buildxy
