@@ -1,5 +1,5 @@
-name: "buildxy"
-description: "buildxy helps you hold buildx correctly"
+name: buildxy
+description: buildxy helps you hold buildx correctly
 inputs:
   container_name:
     description: Name of your container, i.e. `mycoolname/container`
@@ -7,31 +7,26 @@ inputs:
   container_tag:
     description: Tag for your container, i.e. `latest` - omit to make one up based on the branch name
     required: false
-  container_registry:
-    description: Container registry to log into, if not docker.io
-    required: false
-    default: docker.io
-  registry_username:
-    description: Username for container registry
-    required: false
-  registry_password:
-    description: Token for container registry
-    required: false
   extra_build_args:
     description: Additional arguments to pass to `docker buildx build`
     required: false
-  mode:
-    description: Leave at `push` to push your contianer (and the cache manifest), or set to `build` to just build it"
+  push:
+    description: |
+      `yes`, `true`, or `changed`: the container will be pushed if the contents have changed.
+
+      `always`: the container will always be pushed.
+
+      `no`, `false`, or `never`: the container will never be pushed.
     required: false
-    default: push
+    default: changed
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  env:
-    BUILDXY_MODE: ${{ inputs.mode }}
-    EXTRA_BUILD_ARGS: ${{ inputs.extra_build_args }}
-    CONTAINER_NAME: ${{ inputs.container_name }}
-    CONTAINER_TAG: ${{ inputs.container_tag }}
-    CONTAINER_REGISTRY: ${{ inputs.container_registry }}
-    REGISTRY_USERNAME: ${{ inputs.registry_username }}
-    REGISTRY_PASSWORD: ${{ inputs.registry_password }}
+  using: "composite"
+  steps:
+    - run: action.sh
+      shell: bash
+      env:
+        CONTAINER_NAME: ${{ inputs.container_name }}
+        CONTAINER_TAG: ${{ inputs.container_tag }}
+        EXTRA_BUILD_ARGS: ${{ inputs.extra_build_args }}
+        BUILDXY_PUSH: ${{ inputs.push }}
+        PYTHONPATH: ${{ github.action_path }}

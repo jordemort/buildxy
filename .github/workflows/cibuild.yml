@@ -14,9 +14,17 @@ jobs:
         with:
           submodules: recursive
 
+      - uses: actions/cache@v2
+        env:
+          cache-name: buildxy-cache
+        with:
+          path: ./.buildxy-cache
+          key: ${{ github.head_ref }}
+          restore-keys: |
+            ${{ github.head_ref }}
+            main
+
       - name: buildxy
         uses: ./
         with:
           container_name: docker.io/jordemort/buildxy
-          registry_username: ${{ secrets.REGISTRY_USERNAME }}
-          registry_password: ${{ secrets.REGISTRY_TOKEN }}
