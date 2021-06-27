@@ -67,6 +67,8 @@ buildx_argv=(
   --pull
   --platform "$PLATFORMS"
   --load
+  --cache-from "${CONTAINER_REGISTRY}/${CONTAINER_NAME}:${CONTAINER_TAG}.cache"
+  --cache-from "${CONTAINER_REGISTRY}/${CONTAINER_NAME}:latest.cache"
 )
 
 if [ -n "${EXTRA_BUILD_ARGS:-}" ] ; then
@@ -78,15 +80,15 @@ if [ -n "${REGISTRY_USERNAME:-}" ] && [ -n "${REGISTRY_PASSWORD:-}" ] ; then
   docker login "$CONTAINER_REGISTRY" --username "$REGISTRY_USERNAME" --password-stdin <<< "$REGISTRY_PASSWORD"
 fi
 
-for tag in latest "$CONTAINER_TAG" ; do
-  cache_from="${CONTAINER_NAME}:${tag}.cache"
-  if docker pull --quiet "$cache_from" 2> /dev/null ; then
-    echo "INFO: using cache from $cache_from" >&2
-    buildx_argv+=(--cache_from "$cache_from")
-  else
-    echo "INFO: $cache_from not in registry" >&2
-  fi
-done
+#for tag in latest "$CONTAINER_TAG" ; do
+#  cache_from="${CONTAINER_NAME}:${tag}.cache"
+#  if docker pull --quiet "$cache_from" 2> /dev/null ; then
+#    echo "INFO: using cache from $cache_from" >&2
+#    buildx_argv+=(--cache_from "$cache_from")
+#  else
+#    echo "INFO: $cache_from not in registry" >&2
+#  fi
+#done
 
 if [ "$BUILDXY_MODE" = "push" ] ; then
   buildx_argv+=(--cache-to "type=registry,ref=${CONTAINER_REGISTRY}/${CONTAINER_NAME}:${CONTAINER_TAG}.cache,mode=max")
