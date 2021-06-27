@@ -74,6 +74,10 @@ if [ -n "${EXTRA_BUILD_ARGS:-}" ] ; then
   buildx_argv+=("${extra_build_args[@]}")
 fi
 
+if [ -n "${REGISTRY_USERNAME:-}" ] && [ -n "${REGISTRY_PASSWORD:-}" ] ; then
+  docker login "$CONTAINER_REGISTRY" --username "$REGISTRY_USERNAME" --password-stdin <<< "$REGISTRY_PASSWORD"
+fi
+
 for tag in latest "$CONTAINER_TAG" ; do
   cache_from="${CONTAINER_NAME}:${tag}.cache"
   if docker pull --quiet "$cache_from" 2> /dev/null ; then
@@ -99,9 +103,6 @@ cleanup_builder() {
 
 trap cleanup_builder EXIT
 
-if [ -n "${REGISTRY_USERNAME:-}" ] && [ -n "${REGISTRY_PASSWORD:-}" ] ; then
-  docker login "$CONTAINER_REGISTRY" --username "$REGISTRY_USERNAME" --password-stdin <<< "$REGISTRY_PASSWORD"
-fi
 
 docker buildx build \
   --tag "${CONTAINER_REGISTRY}/${CONTAINER_NAME}:${CONTAINER_TAG}" \
