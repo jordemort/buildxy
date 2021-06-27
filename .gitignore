@@ -1,0 +1,5 @@
+.buildxy-cache
+.buildxy-cache.new
+.tools
+__pycache__
+attic

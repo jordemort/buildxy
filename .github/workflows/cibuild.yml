@@ -1,0 +1,30 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+name: Build buildxy
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2.3.4
+        with:
+          submodules: recursive
+
+      - uses: actions/cache@v2
+        env:
+          cache-name: buildxy-cache
+        with:
+          path: ./.buildxy-cache
+          key: ${{ github.head_ref }}
+          restore-keys: |
+            ${{ github.head_ref }}
+            main
+
+      - name: buildxy
+        uses: ./
+        with:
+          container_name: docker.io/jordemort/buildxy

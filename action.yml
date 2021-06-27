@@ -1,0 +1,31 @@
+name: buildxy
+description: buildxy helps you hold buildx correctly
+inputs:
+  container_name:
+    description: Name of your container, i.e. `mycoolname/container`
+    required: true
+  container_tag:
+    description: Tag for your container, i.e. `latest` - omit to make one up based on the branch name
+    required: false
+  extra_build_args:
+    description: Additional arguments to pass to `docker buildx build`
+    required: false
+  push:
+    description: |
+      `yes`, `true`, or `changed`: the container will be pushed if the contents have changed.
+
+      `always`: the container will always be pushed.
+
+      `no`, `false`, or `never`: the container will never be pushed.
+    required: false
+    default: changed
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path}}/action.sh
+      shell: bash
+      env:
+        CONTAINER_NAME: ${{ inputs.container_name }}
+        CONTAINER_TAG: ${{ inputs.container_tag }}
+        EXTRA_BUILD_ARGS: ${{ inputs.extra_build_args }}
+        BUILDXY_PUSH: ${{ inputs.push }}
